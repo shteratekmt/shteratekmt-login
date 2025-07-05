@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - SH TERATE KMT</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login SH TERATE KMT</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f0f8ff;
+      background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
+      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
-    .card {
-      background: white;
-      padding: 40px;
+    .login-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px 40px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
       max-width: 400px;
+      text-align: center;
     }
-    h2 {
-      margin-bottom: 30px;
+    .login-box img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
       color: #004d40;
     }
     #notif {
-      margin-top: 20px;
+      margin-top: 10px;
       color: red;
       display: none;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Login SSO Google</h2>
+  <div class="login-box">
+    <img src="logo-shterate.png" alt="Logo SH TERATE">
+    <h2>LOGIN SH TERATE KMT</h2>
     <div id="loginBtn"></div>
     <div id="notif"></div>
   </div>
@@ -63,8 +70,8 @@
           }
         })
         .catch(err => {
+          console.error("Error:", err);
           showNotif("Gagal menghubungi server.");
-          console.error(err);
         });
     }
 
@@ -85,7 +92,7 @@
         { theme: "outline", size: "large" }
       );
 
-      google.accounts.id.prompt(); // Login otomatis jika tersedia
+      google.accounts.id.prompt();
     };
   </script>
 </body>
