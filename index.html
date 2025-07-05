@@ -2,70 +2,42 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login SH TERATE KMT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - SH TERATE KMT</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
-      background-size: cover;
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
-
-    .container {
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 40px 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
       max-width: 400px;
-      width: 100%;
-      animation: fadeIn 1s ease;
     }
-
-    .container h1 {
+    h2 {
       margin-bottom: 30px;
-      color: #333;
+      color: #004d40;
     }
-
     #notif {
       margin-top: 20px;
-      background: #ff5722;
-      color: white;
-      padding: 12px;
-      border-radius: 6px;
+      color: red;
       display: none;
-    }
-
-    .g_id_signin {
-      display: inline-block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="logo-shterate.png" alt="Logo SH TERATE" style="width: 80px; margin-bottom: 15px;">
-    <h1>Login SH TERATE KMT</h1>
-
-    <!-- Google Login -->
-    <div id="g_id_onload"
-      data-client_id="156563935093-8ufjlt5orvpj38spl0q1g6glt376mu9s.apps.googleusercontent.com"
-      data-callback="handleLogin"
-      data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard" data-shape="rectangular"></div>
-
+  <div class="card">
+    <h2>Login SSO Google</h2>
+    <div id="loginBtn"></div>
     <div id="notif"></div>
   </div>
 
@@ -77,19 +49,22 @@
       const payload = JSON.parse(atob(jwt.split('.')[1]));
       const email = payload.email;
 
+      localStorage.setItem("email", email);
+
       fetch(`${scriptURL}?email=${encodeURIComponent(email)}`)
         .then(res => res.text())
         .then(role => {
           if (role === "admin") {
             window.location.href = "admin-dashboard.html";
           } else if (role === "siswa") {
-            window.location.href = "siswa-dashboard.html";
+            window.location.href = "dashboard-siswa.html";
           } else {
             showNotif("Akun tidak terdaftar di sistem.");
           }
         })
         .catch(err => {
           showNotif("Gagal menghubungi server.");
+          console.error(err);
         });
     }
 
@@ -98,6 +73,20 @@
       n.innerText = msg;
       n.style.display = "block";
     }
+
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "ISI_CLIENT_ID_KAMU",
+        callback: handleLogin
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("loginBtn"),
+        { theme: "outline", size: "large" }
+      );
+
+      google.accounts.id.prompt(); // Login otomatis jika tersedia
+    };
   </script>
 </body>
 </html>
