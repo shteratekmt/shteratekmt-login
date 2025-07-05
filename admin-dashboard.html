@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <style>
+    body { font-family: Arial; background: #111; color: #fff; text-align: center; padding: 40px; }
+    .card { background: #222; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 0 10px gold; }
+    button { padding: 10px 20px; margin-top: 20px; background: gold; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Selamat Datang, Admin</h1>
+    <p id="user-info">Memuat data pengguna...</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZsk6Zp1UvgZ9CiqSYlHPBTPz-zbFMylA",
+      authDomain: "shteratekmt-6794e.firebaseapp.com",
+      projectId: "shteratekmt-6794e",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById("user-info").innerText = `Login sebagai: ${user.displayName} (${user.email})`;
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+  </script>
+</body>
+</html>
