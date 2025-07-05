@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Admin / Siswa</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 40px; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    label { display: block; margin: 10px 0 5px; }
+    select, button { width: 100%; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 16px; }
+    #notif { margin-top: 15px; background: #ff9800; color: white; padding: 10px; text-align: center; border-radius: 5px; display: none; }
+
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #b71c1c;
+      color: white;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .topnav a {
+      color: white;
+      margin-right: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .topnav a.masuk-btn {
+      background: white;
+      color: red;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <a href="/">BERANDA</a>
+    <a class="masuk-btn" onclick="loginWithGoogle('siswa')">MASUK</a>
+  </div>
+
+  <div class="container" id="login-area" style="margin-top: 80px;">
+    <h1>Login SH TERATE KMT</h1>
+    <label for="role">Pilih sebagai:</label>
+    <select id="role">
+      <option value="">-- Pilih peran --</option>
+      <option value="admin">Admin</option>
+      <option value="siswa">Siswa</option>
+    </select>
+    <button onclick="loginWithGoogle()">Login dengan Google</button>
+    <div id="notif"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZsk6Zp1UvgZ9CiqSYlHPBTPz-zbFMylA",
+      authDomain: "shteratekmt-6794e.firebaseapp.com",
+      projectId: "shteratekmt-6794e",
+      storageBucket: "shteratekmt-6794e.appspot.com",
+      messagingSenderId: "181811263122",
+      appId: "1:181811263122:web:818e7366ae1ae6d530d84b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function loginWithGoogle(roleOverride = null) {
+      const role = roleOverride || document.getElementById("role").value;
+      if (!role) {
+        showNotif("Silakan pilih peran terlebih dahulu");
+        return;
+      }
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).then(result => {
+        const user = result.user;
+        if (role === "admin") {
+          db.collection("admins").doc(user.uid).get().then(doc => {
+            if (doc.exists && doc.data().role === "admin") {
+              window.location.href = "admin-dashboard.html";
+            } else {
+              showNotif("Anda tidak terdaftar sebagai admin.");
+            }
+          });
+        } else {
+          window.location.href = "siswa-dashboard.html";
+        }
+      }).catch(err => {
+        showNotif("Gagal login: " + err.message);
+      });
+    }
+
+    function showNotif(msg) {
+      const n = document.getElementById("notif");
+      n.innerText = msg;
+      n.style.display = "block";
+    }
+  </script>
+</body>
+</html>
