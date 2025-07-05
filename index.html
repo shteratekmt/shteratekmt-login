@@ -2,11 +2,10 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Login Admin / Siswa</title>
+  <title>Login SH TERATE KMT</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
   <style>
     body { font-family: Arial; background: #f4f4f4; padding: 40px; }
     h1 { text-align: center; margin-bottom: 20px; }
@@ -25,7 +24,7 @@
       <option value="admin">Admin</option>
       <option value="siswa">Siswa</option>
     </select>
-    <button onclick="loginWithGoogle()">Login dengan Google</button>
+    <button onclick="startLogin()">Login dengan Google</button>
     <div id="notif"></div>
   </div>
 
@@ -34,38 +33,45 @@
       apiKey: "AIzaSyBZsk6Zp1UvgZ9CiqSYlHPBTPz-zbFMylA",
       authDomain: "shteratekmt-6794e.firebaseapp.com",
       projectId: "shteratekmt-6794e",
-      storageBucket: "shteratekmt-6794e.appspot.com",
-      messagingSenderId: "181811263122",
-      appId: "1:181811263122:web:818e7366ae1ae6d530d84b"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function loginWithGoogle(roleOverride = null) {
-      const role = roleOverride || document.getElementById("role").value;
+    // Simpan role di localStorage agar bisa diambil setelah redirect
+    function startLogin() {
+      const role = document.getElementById("role").value;
       if (!role) {
         showNotif("Silakan pilih peran terlebih dahulu");
         return;
       }
+      localStorage.setItem("userRole", role);
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then(result => {
-        const user = result.user;
+      auth.signInWithRedirect(provider);
+    }
+
+    // Setelah kembali dari redirect Google
+    auth.getRedirectResult().then(result => {
+      if (result.user) {
+        const role = localStorage.getItem("userRole");
         if (role === "admin") {
-          db.collection("admins").doc(user.uid).get().then(doc => {
+          db.collection("admins").doc(result.user.uid).get().then(doc => {
             if (doc.exists && doc.data().role === "admin") {
               window.location.href = "admin-dashboard.html";
             } else {
               showNotif("Anda tidak terdaftar sebagai admin.");
+              auth.signOut();
             }
           });
         } else {
           window.location.href = "siswa-dashboard.html";
         }
-      }).catch(err => {
+      }
+    }).catch(err => {
+      if (err && err.message) {
         showNotif("Gagal login: " + err.message);
-      });
-    }
+      }
+    });
 
     function showNotif(msg) {
       const n = document.getElementById("notif");
