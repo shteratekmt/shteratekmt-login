@@ -1,79 +1,49 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Login SH TERATE KMT</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body { font-family: Arial; background: #f4f4f4; padding: 40px; }
-    h1 { text-align: center; margin-bottom: 20px; }
+    body { font-family: Arial; background: #f4f4f4; padding: 40px; text-align: center; }
     .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    label { display: block; margin: 10px 0 5px; }
-    select, button { width: 100%; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 16px; }
     #notif { margin-top: 15px; background: #ff9800; color: white; padding: 10px; text-align: center; border-radius: 5px; display: none; }
   </style>
 </head>
 <body>
-  <div class="container" id="login-area">
+  <div class="container">
     <h1>Login SH TERATE KMT</h1>
-    <label for="role">Pilih sebagai:</label>
-    <select id="role">
-      <option value="">-- Pilih peran --</option>
-      <option value="admin">Admin</option>
-      <option value="siswa">Siswa</option>
-    </select>
-    <button onclick="startLogin()">Login dengan Google</button>
+    <div id="g_id_onload"
+      data-client_id="GANTI_DENGAN_CLIENT_ID_ANDA"
+      data-callback="handleLogin"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
     <div id="notif"></div>
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBZsk6Zp1UvgZ9CiqSYlHPBTPz-zbFMylA",
-      authDomain: "shteratekmt-6794e.firebaseapp.com",
-      projectId: "shteratekmt-6794e"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const scriptURL = "https://script.google.com/macros/s/AKfycbybi2ImSH2YTQxKzBNxWxKxV_YvJgN2a-MAknxkPlx1T5uTe8tSolrh_ekHAxk8X8DSfg/exec";
 
-    // Cek hasil login redirect
-    window.onload = () => {
-      auth.getRedirectResult().then(result => {
-        if (result.user) {
-          const role = localStorage.getItem("userRole");
-          if (!role) {
-            showNotif("Gagal mendapatkan peran login.");
-            return;
-          }
+    function handleLogin(response) {
+      const jwt = response.credential;
+      const payload = JSON.parse(atob(jwt.split('.')[1]));
+      const email = payload.email;
+
+      fetch(`${scriptURL}?email=${encodeURIComponent(email)}`)
+        .then(res => res.text())
+        .then(role => {
           if (role === "admin") {
-            db.collection("admins").doc(result.user.uid).get().then(doc => {
-              if (doc.exists && doc.data().role === "admin") {
-                window.location.href = "admin-dashboard.html";
-              } else {
-                showNotif("Anda tidak terdaftar sebagai admin.");
-                auth.signOut();
-              }
-            });
-          } else {
+            window.location.href = "admin-dashboard.html";
+          } else if (role === "siswa") {
             window.location.href = "siswa-dashboard.html";
+          } else {
+            showNotif("Akun tidak terdaftar di sistem.");
           }
-        }
-      }).catch(error => {
-        showNotif("Gagal login: " + error.message);
-      });
-    };
-
-    function startLogin() {
-      const role = document.getElementById("role").value;
-      if (!role) {
-        showNotif("Silakan pilih peran terlebih dahulu.");
-        return;
-      }
-      localStorage.setItem("userRole", role);
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithRedirect(provider);
+        })
+        .catch(err => {
+          showNotif("Gagal menghubungi server.");
+        });
     }
 
     function showNotif(msg) {
