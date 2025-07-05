@@ -32,46 +32,49 @@
     const firebaseConfig = {
       apiKey: "AIzaSyBZsk6Zp1UvgZ9CiqSYlHPBTPz-zbFMylA",
       authDomain: "shteratekmt-6794e.firebaseapp.com",
-      projectId: "shteratekmt-6794e",
+      projectId: "shteratekmt-6794e"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Simpan role di localStorage agar bisa diambil setelah redirect
+    // Cek hasil login redirect
+    window.onload = () => {
+      auth.getRedirectResult().then(result => {
+        if (result.user) {
+          const role = localStorage.getItem("userRole");
+          if (!role) {
+            showNotif("Gagal mendapatkan peran login.");
+            return;
+          }
+          if (role === "admin") {
+            db.collection("admins").doc(result.user.uid).get().then(doc => {
+              if (doc.exists && doc.data().role === "admin") {
+                window.location.href = "admin-dashboard.html";
+              } else {
+                showNotif("Anda tidak terdaftar sebagai admin.");
+                auth.signOut();
+              }
+            });
+          } else {
+            window.location.href = "siswa-dashboard.html";
+          }
+        }
+      }).catch(error => {
+        showNotif("Gagal login: " + error.message);
+      });
+    };
+
     function startLogin() {
       const role = document.getElementById("role").value;
       if (!role) {
-        showNotif("Silakan pilih peran terlebih dahulu");
+        showNotif("Silakan pilih peran terlebih dahulu.");
         return;
       }
       localStorage.setItem("userRole", role);
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithRedirect(provider);
     }
-
-    // Setelah kembali dari redirect Google
-    auth.getRedirectResult().then(result => {
-      if (result.user) {
-        const role = localStorage.getItem("userRole");
-        if (role === "admin") {
-          db.collection("admins").doc(result.user.uid).get().then(doc => {
-            if (doc.exists && doc.data().role === "admin") {
-              window.location.href = "admin-dashboard.html";
-            } else {
-              showNotif("Anda tidak terdaftar sebagai admin.");
-              auth.signOut();
-            }
-          });
-        } else {
-          window.location.href = "siswa-dashboard.html";
-        }
-      }
-    }).catch(err => {
-      if (err && err.message) {
-        showNotif("Gagal login: " + err.message);
-      }
-    });
 
     function showNotif(msg) {
       const n = document.getElementById("notif");
