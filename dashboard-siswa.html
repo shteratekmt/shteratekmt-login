@@ -1,41 +1,71 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Siswa - SH TERATE KMT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     body {
+      margin: 0;
       font-family: 'Poppins', sans-serif;
       background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
       background-size: cover;
-      margin: 0;
-      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
     .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 30px;
       background: rgba(255, 255, 255, 0.95);
+      padding: 30px 40px;
       border-radius: 12px;
-      margin-top: 40px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 700px;
     }
     h2 {
       text-align: center;
       color: #004d40;
+      margin-bottom: 25px;
     }
-    label {
+    form label {
+      display: block;
+      margin-top: 15px;
       font-weight: 600;
     }
-    input, select, textarea {
+    form input, form select, form textarea {
       width: 100%;
       padding: 10px;
-      margin: 8px 0 20px;
-      border: 1px solid #ccc;
       border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      font-size: 14px;
     }
+    .profile-img {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 100px;
+      border-radius: 10px;
+    }
+    table {
+      margin-top: 30px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      background: white;
+    }
+    .status-belum { color: red; font-weight: bold; }
+    .status-lunas { color: green; font-weight: bold; }
     button {
+      margin-top: 20px;
       width: 100%;
       padding: 12px;
       font-size: 16px;
@@ -45,61 +75,35 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 25px;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-    .status-belum {
-      color: red;
-      font-weight: bold;
-    }
-    .status-lunas {
-      color: green;
-      font-weight: bold;
-    }
-    #fotoPreview {
-      display: block;
-      margin: 0 auto 20px;
-      max-width: 120px;
-      border-radius: 10px;
-    }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>Dashboard Siswa</h2>
+  <div class="container">
+    <h2>Dashboard Siswa</h2>
+    <img id="fotoPreview" class="profile-img" src="" alt="Foto Profil" style="display:none">
+    <form id="biodataForm">
+      <label>Nama Lengkap</label>
+      <input type="text" name="nama" required />
+      <label>NIK</label>
+      <input type="text" name="nik" required />
+      <label>Tanggal Lahir</label>
+      <input type="date" name="tgl_lahir" required />
+      <label>Jenis Kelamin</label>
+      <select name="jk" required>
+        <option value="">-- Pilih --</option>
+        <option value="L">Laki-laki</option>
+        <option value="P">Perempuan</option>
+      </select>
+      <label>Alamat</label>
+      <textarea name="alamat"></textarea>
+      <label>No HP</label>
+      <input type="text" name="nohp" />
+      <label>Upload Foto 4x6</label>
+      <input type="file" name="foto" accept="image/*" />
+      <button type="submit">Simpan Biodata</button>
+    </form>
 
-  <form id="biodataForm" style="display:none">
-    <img id="fotoPreview" src="" alt="Foto" style="display:none">
-    <label>Nama Lengkap</label>
-    <input type="text" name="nama" required>
-    <label>NIK</label>
-    <input type="text" name="nik" required>
-    <label>Tanggal Lahir</label>
-    <input type="date" name="tgl_lahir" required>
-    <label>Jenis Kelamin</label>
-    <select name="jk" required>
-      <option value="">-- Pilih --</option>
-      <option value="L">Laki-laki</option>
-      <option value="P">Perempuan</option>
-    </select>
-    <label>Alamat</label>
-    <textarea name="alamat" required></textarea>
-    <label>No HP</label>
-    <input type="text" name="nohp" required>
-    <label>Upload Foto 4x6</label>
-    <input type="file" name="foto" accept="image/*">
-    <button type="submit">Simpan Biodata</button>
-  </form>
-
-  <div id="tagihanView" style="display:none">
-    <h3>Tagihan SPP Anda</h3>
-    <table>
+    <table id="tagihanTable">
       <thead>
         <tr>
           <th>Bulan</th>
@@ -109,65 +113,33 @@
           <th>Aksi</th>
         </tr>
       </thead>
-      <tbody id="tagihanTable"></tbody>
+      <tbody></tbody>
     </table>
   </div>
-</div>
 
-<script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzotDHjsclwfCNjCE2XEVcYZiJW_RpHrY1xWDdDzAUzjmLkNvKTEDVIMsuUtuYJaVRp/exec";
-  const email = localStorage.getItem("email");
-  if (!email) window.location.href = "index.html";
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzotDHjsclwfCNjCE2XEVcYZiJW_RpHrY1xWDdDzAUzjmLkNvKTEDVIMsuUtuYJaVRp/exec";
+    const email = localStorage.getItem("email");
+    if (!email) window.location.href = "index.html";
 
-  fetch(`${scriptURL}?email=${email}&type=biodata`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data || !data.Nama || data.Nama === "") {
-        document.getElementById("biodataForm").style.display = "block";
-      } else {
-        document.getElementById("tagihanView").style.display = "block";
-        loadTagihan();
-      }
-
-      for (const key in data) {
-        const input = document.querySelector(`[name="${key.toLowerCase()}"]`);
-        if (input) input.value = data[key];
-      }
-      if (data.Foto) {
-        const img = document.getElementById("fotoPreview");
-        img.src = data.Foto;
-        img.style.display = "block";
-      }
-    });
-
-  document.getElementById("biodataForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    formData.append("email", email);
-    formData.append("type", "updateBiodata");
-
-    fetch(scriptURL, {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.text())
-    .then(msg => {
-      alert(msg);
-      if (msg.includes("berhasil")) {
-        document.getElementById("biodataForm").style.display = "none";
-        document.getElementById("tagihanView").style.display = "block";
-        loadTagihan();
-      }
-    })
-    .catch(() => alert("Gagal menyimpan biodata."));
-  });
-
-  function loadTagihan() {
-    fetch(`${scriptURL}?email=${email}&type=tagihan`)
+    fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=biodata`)
       .then(res => res.json())
       .then(data => {
-        const tbody = document.getElementById("tagihanTable");
-        tbody.innerHTML = "";
+        for (const key in data) {
+          const input = document.querySelector(`[name='${key.toLowerCase()}']`);
+          if (input) input.value = data[key];
+        }
+        if (data.Foto) {
+          const foto = document.getElementById("fotoPreview");
+          foto.src = data.Foto;
+          foto.style.display = "block";
+        }
+      });
+
+    fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=tagihan`)
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#tagihanTable tbody");
         data.forEach(row => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
@@ -175,31 +147,36 @@
             <td>${row.Jumlah}</td>
             <td class="${row.Status === 'Lunas' ? 'status-lunas' : 'status-belum'}">${row.Status}</td>
             <td>${row.Bukti || '-'}</td>
-            <td>
-              ${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}
-            </td>
-          `;
+            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>`;
           tbody.appendChild(tr);
         });
       });
-  }
 
-  function uploadBukti(input, bulan) {
-    const file = input.files[0];
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("bulan", bulan);
-    formData.append("bukti", file);
-    formData.append("type", "uploadBukti");
+    document.getElementById("biodataForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append("email", email);
+      formData.append("type", "updateBiodata");
 
-    fetch(scriptURL, {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.text())
-    .then(alert)
-    .catch(() => alert("Gagal upload bukti pembayaran."));
-  }
-</script>
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(res => res.text())
+        .then(alert)
+        .catch(() => alert("Gagal menyimpan biodata."));
+    });
+
+    function uploadBukti(input, bulan) {
+      const file = input.files[0];
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("bulan", bulan);
+      formData.append("bukti", file);
+      formData.append("type", "uploadBukti");
+
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(res => res.text())
+        .then(alert)
+        .catch(() => alert("Gagal upload bukti pembayaran."));
+    }
+  </script>
 </body>
 </html>
