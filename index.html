@@ -1,99 +1,60 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login SH TERATE KMT</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Siswa - SH TERATE KMT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
       background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
     .login-box {
       background: rgba(255, 255, 255, 0.95);
-      padding: 30px 40px;
+      padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
       text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
-    .login-box img {
+    img.logo {
       width: 100px;
-      margin-bottom: 10px;
-    }
-    .login-box h2 {
       margin-bottom: 20px;
-      color: #004d40;
     }
-    #notif {
-      margin-top: 10px;
-      color: red;
-      display: none;
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #004d40;
+      color: white;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="login-box">
-    <img src="logo-shterate.png" alt="Logo SH TERATE">
-    <h2>LOGIN SH TERATE KMT</h2>
-    <div id="loginBtn"></div>
-    <div id="notif"></div>
+    <img src="logo-shterate.png" alt="Logo" class="logo" />
+    <h2>Login Siswa</h2>
+    <button onclick="login()">Login dengan Google</button>
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbybi2ImSH2YTQxKzBNxWxKxV_YvJgN2a-MAknxkPlx1T5uTe8tSolrh_ekHAxk8X8DSfg/exec";
-
-    function handleLogin(response) {
-      const jwt = response.credential;
-      const payload = JSON.parse(atob(jwt.split('.')[1]));
-      const email = payload.email;
-
-      localStorage.setItem("email", email);
-
-      fetch(`${scriptURL}?email=${encodeURIComponent(email)}`)
-        .then(res => res.text())
-        .then(role => {
-          if (role === "admin") {
-            window.location.href = "admin-dashboard.html";
-          } else if (role === "siswa") {
-            window.location.href = "dashboard-siswa.html";
-          } else {
-            showNotif("Akun tidak terdaftar di sistem.");
-          }
-        })
-        .catch(err => {
-          console.error("Error:", err);
-          showNotif("Gagal menghubungi server.");
-        });
+    function login() {
+      const email = prompt("Masukkan email siswa:");
+      if (email && email.includes("@")) {
+        localStorage.setItem("email", email);
+        window.location.href = "dashboard-siswa.html";
+      } else {
+        alert("Email tidak valid.");
+      }
     }
-
-    function showNotif(msg) {
-      const n = document.getElementById("notif");
-      n.innerText = msg;
-      n.style.display = "block";
-    }
-
-    window.onload = function () {
-      google.accounts.id.initialize({
-        client_id: "156563935093-8ufjlt5orvpj38spl0q1g6glt376mu9s.apps.googleusercontent.com",
-        callback: handleLogin
-      });
-
-      google.accounts.id.renderButton(
-        document.getElementById("loginBtn"),
-        { theme: "outline", size: "large" }
-      );
-
-      google.accounts.id.prompt();
-    };
   </script>
 </body>
 </html>

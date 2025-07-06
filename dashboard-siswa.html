@@ -110,7 +110,6 @@
     const email = localStorage.getItem("email");
     if (!email) window.location.href = "index.html";
 
-    // Tampilkan data siswa
     fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=biodata`)
       .then(res => res.json())
       .then(data => {
@@ -125,7 +124,6 @@
         }
       });
 
-    // Form submit biodata
     document.getElementById("biodataForm").addEventListener("submit", e => {
       e.preventDefault();
       const form = e.target;
@@ -133,16 +131,12 @@
       formData.append("email", email);
       formData.append("type", "updateBiodata");
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.text())
-      .then(msg => alert(msg))
-      .catch(() => alert("Gagal menyimpan biodata."));
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(res => res.text())
+        .then(msg => alert(msg))
+        .catch(() => alert("Gagal menyimpan biodata."));
     });
 
-    // Tampilkan tagihan
     fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=tagihan`)
       .then(res => res.json())
       .then(data => {
@@ -154,13 +148,11 @@
             <td>${row.Jumlah}</td>
             <td class="${row.Status === 'Lunas' ? 'status-lunas' : 'status-belum'}">${row.Status}</td>
             <td>${row.Bukti ? `<a href="${row.Bukti}" target="_blank">Lihat</a>` : '-'}</td>
-            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>
-          `;
+            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>`;
           tbody.appendChild(tr);
         });
       });
 
-    // Upload bukti bayar
     function uploadBukti(input, bulan) {
       const file = input.files[0];
       const formData = new FormData();
@@ -173,9 +165,9 @@
         method: "POST",
         body: formData
       })
-      .then(res => res.text())
-      .then(msg => alert(msg))
-      .catch(() => alert("Gagal upload bukti pembayaran."));
+        .then(res => res.text())
+        .then(alert)
+        .catch(() => alert("Gagal upload bukti pembayaran."));
     }
   </script>
 </body>
