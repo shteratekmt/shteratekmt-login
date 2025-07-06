@@ -1,46 +1,40 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard Siswa - SH Terate KMT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Siswa</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
 </head>
-<body class="dashboard-page">
-  <aside class="sidebar">
-    <h2>SH Terate KMT</h2>
-    <ul>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">Biodata</a></li>
-      <li><a href="#">Tagihan SPP</a></li>
-      <li><a href="#">Riwayat</a></li>
-      <li><a href="#" onclick="logout()">Logout</a></li>
-    </ul>
-  </aside>
+<body>
+  <div class="container">
+    <h2>Dashboard Siswa</h2>
+    <div id="biodata">
+      <p>Memuat data...</p>
+    </div>
+  </div>
 
-  <main class="content">
-    <header>
-      <h2>Selamat Datang, <span id="nama">...</span></h2>
-    </header>
+  <script>
+    async function ambilDataSiswa() {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbx9HCRtn5WhhWcb27ia-vSUSkB57iaJ6sEgwtc_t2-SmTr5Btz7ezk2kp7quBJY3Jf5/exec");
+      const data = await res.json();
 
-    <section class="biodata-box">
-      <h3>Data Pribadi</h3>
-      <p><strong>NIK:</strong> <span id="nik">...</span></p>
-      <p><strong>Jenis Kelamin:</strong> <span id="jk">...</span></p>
-      <p><strong>Alamat:</strong> <span id="alamat">...</span></p>
-    </section>
+      if (data.error) {
+        document.getElementById("biodata").innerHTML = "<p>" + data.error + "</p>";
+      } else {
+        document.getElementById("biodata").innerHTML = `
+          <h3>Halo, ${data.Nama}</h3>
+          <p><strong>NIK:</strong> ${data.NIK}</p>
+          <p><strong>Tanggal Lahir:</strong> ${data["Tanggal Lahir"]}</p>
+          <p><strong>Jenis Kelamin:</strong> ${data["Jenis Kelamin"]}</p>
+          <p><strong>Alamat:</strong> ${data.Alamat}</p>
+          <p><strong>No HP:</strong> ${data["No HP"]}</p>
+        `;
+      }
+    }
 
-    <section class="spp-box">
-      <h3>Status Pembayaran SPP</h3>
-      <table>
-        <thead>
-          <tr><th>Bulan</th><th>Status</th></tr>
-        </thead>
-        <tbody id="tabel-spp">
-        </tbody>
-      </table>
-    </section>
-  </main>
+    ambilDataSiswa();
+  </script>
 </body>
 </html>
