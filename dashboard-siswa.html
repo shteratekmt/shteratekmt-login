@@ -1,86 +1,74 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard Siswa - SH TERATE KMT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <title>Dashboard Siswa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
       background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
       background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      margin: 0;
     }
     .container {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px 40px;
+      max-width: 900px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 700px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
     h2 {
       text-align: center;
+      margin-bottom: 20px;
       color: #004d40;
-      margin-bottom: 25px;
     }
-    form label {
-      display: block;
-      margin-top: 15px;
+    label {
       font-weight: 600;
     }
-    form input, form select, form textarea {
+    input, select, textarea {
       width: 100%;
       padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      margin-top: 5px;
       font-size: 14px;
     }
-    .profile-img {
-      display: block;
-      margin: 0 auto 20px;
-      max-width: 100px;
-      border-radius: 10px;
+    button {
+      padding: 12px;
+      background-color: #004d40;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
     }
     table {
-      margin-top: 30px;
       width: 100%;
       border-collapse: collapse;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
+      margin-top: 30px;
     }
     th, td {
-      padding: 8px;
-      text-align: left;
-      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
     }
     .status-belum { color: red; font-weight: bold; }
     .status-lunas { color: green; font-weight: bold; }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      background: #0288d1;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+    #fotoPreview {
+      max-width: 100px;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Dashboard Siswa</h2>
-    <img id="fotoPreview" class="profile-img" src="" alt="Foto Profil" style="display:none">
+    <img id="fotoPreview" src="" alt="Foto Profil" style="display:none"/>
     <form id="biodataForm">
       <label>Nama Lengkap</label>
       <input type="text" name="nama" required />
@@ -122,20 +110,39 @@
     const email = localStorage.getItem("email");
     if (!email) window.location.href = "index.html";
 
+    // Tampilkan data siswa
     fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=biodata`)
       .then(res => res.json())
       .then(data => {
         for (const key in data) {
-          const input = document.querySelector(`[name='${key.toLowerCase()}']`);
-          if (input) input.value = data[key];
+          const el = document.querySelector(`[name='${key.toLowerCase()}']`);
+          if (el) el.value = data[key];
         }
         if (data.Foto) {
-          const foto = document.getElementById("fotoPreview");
-          foto.src = data.Foto;
-          foto.style.display = "block";
+          const img = document.getElementById("fotoPreview");
+          img.src = data.Foto;
+          img.style.display = "block";
         }
       });
 
+    // Form submit biodata
+    document.getElementById("biodataForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      formData.append("email", email);
+      formData.append("type", "updateBiodata");
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => alert(msg))
+      .catch(() => alert("Gagal menyimpan biodata."));
+    });
+
+    // Tampilkan tagihan
     fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=tagihan`)
       .then(res => res.json())
       .then(data => {
@@ -146,24 +153,14 @@
             <td>${row.Bulan}</td>
             <td>${row.Jumlah}</td>
             <td class="${row.Status === 'Lunas' ? 'status-lunas' : 'status-belum'}">${row.Status}</td>
-            <td>${row.Bukti || '-'}</td>
-            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>`;
+            <td>${row.Bukti ? `<a href="${row.Bukti}" target="_blank">Lihat</a>` : '-'}</td>
+            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>
+          `;
           tbody.appendChild(tr);
         });
       });
 
-    document.getElementById("biodataForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append("email", email);
-      formData.append("type", "updateBiodata");
-
-      fetch(scriptURL, { method: "POST", body: formData })
-        .then(res => res.text())
-        .then(alert)
-        .catch(() => alert("Gagal menyimpan biodata."));
-    });
-
+    // Upload bukti bayar
     function uploadBukti(input, bulan) {
       const file = input.files[0];
       const formData = new FormData();
@@ -172,10 +169,13 @@
       formData.append("bukti", file);
       formData.append("type", "uploadBukti");
 
-      fetch(scriptURL, { method: "POST", body: formData })
-        .then(res => res.text())
-        .then(alert)
-        .catch(() => alert("Gagal upload bukti pembayaran."));
+      fetch(scriptURL, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => alert(msg))
+      .catch(() => alert("Gagal upload bukti pembayaran."));
     }
   </script>
 </body>
