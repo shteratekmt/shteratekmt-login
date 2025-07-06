@@ -1,70 +1,64 @@
-* {
+body.login-page {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #ffffff;
-  min-height: 100vh;
+  background-image: url('bg-shteratekmt.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
+  align-items: center;
+  backdrop-filter: brightness(0.6);
 }
 
-img {
-  width: 200px;
-  height: auto;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
-}
-
-.container {
-  background-color: rgba(255, 255, 255, 0.08);
-  padding: 30px 40px;
+.login-box {
+  background-color: #ffffff;
+  padding: 30px 25px;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 360px;
   text-align: center;
 }
 
-h1 {
-  font-size: 24px;
+.login-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
-  color: #00f2ff;
 }
 
-button {
-  background-color: #00b894;
-  color: #fff;
-  border: none;
+.logo-left {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.desc {
+  margin-bottom: 25px;
+  color: #666;
+}
+
+.btn-login {
   padding: 12px 20px;
+  width: 100%;
+  background-color: #007bff;
+  color: #fff;
   font-size: 16px;
-  border-radius: 8px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s;
 }
 
-button:hover {
-  background-color: #00cec9;
-}
-
-.message {
-  margin-top: 20px;
-  color: #ff7675;
-  font-weight: bold;
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 20px;
-    width: 90%;
-  }
-
-  img {
-    width: 150px;
-  }
+.btn-login:hover {
+  background-color: #0056b3;
 }
