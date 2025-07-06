@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Siswa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Siswa - SHT KMT</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -10,60 +10,51 @@
   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <h2>SH TERATE KMT</h2>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="#biodata">Biodata</a></li>
-          <li><a href="#spp">Tagihan SPP</a></li>
-          <li><a href="#grafik">Grafik IPK/IPS</a></li>
-          <li><a href="#cetak">Cetak Bukti</a></li>
-          <li><a href="index.html">Logout</a></li>
-        </ul>
-      </nav>
-    </aside><!-- Main Content -->
-<main class="main-content">
-  <section id="biodata">
-    <h2>Data Siswa</h2>
-    <div class="profile">
-      <img id="foto" src="" alt="Foto Siswa" />
+      <img src="logo-shterate.png" class="logo" alt="Logo SHT KMT"/>
+      <h2>SHT KMT</h2>
       <ul>
-        <li><strong>Nama:</strong> <span id="nama"></span></li>
-        <li><strong>NIK:</strong> <span id="nik"></span></li>
-        <li><strong>Email:</strong> <span id="email"></span></li>
-        <li><strong>Tanggal Lahir:</strong> <span id="tgl_lahir"></span></li>
-        <li><strong>Jenis Kelamin:</strong> <span id="jk"></span></li>
-        <li><strong>Alamat:</strong> <span id="alamat"></span></li>
-        <li><strong>No HP:</strong> <span id="nohp"></span></li>
+        <li><a href="#">Profil</a></li>
+        <li><a href="#">SPP</a></li>
+        <li><a href="#">Grafik IPS/IPK</a></li>
+        <li><a href="index.html">Logout</a></li>
       </ul>
-    </div>
-  </section>
+    </aside><!-- Main Content -->
+<main class="content">
+  <h1>Dashboard Siswa</h1>
 
-  <section id="spp">
-    <h2>Status Pembayaran SPP</h2>
+  <!-- Biodata -->
+  <div class="biodata">
+    <img id="foto" class="foto-siswa" src="" alt="Foto Siswa">
     <table>
-      <thead>
-        <tr>
-          <th>Bulan</th>
-          <th>Jumlah</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="tabel-spp">
-        <!-- Data SPP dari Sheets -->
-      </tbody>
+      <tr><th>Nama</th><td id="nama">-</td></tr>
+      <tr><th>NIK</th><td id="nik">-</td></tr>
+      <tr><th>Email</th><td id="email">-</td></tr>
+      <tr><th>Tanggal Lahir</th><td id="ttl">-</td></tr>
+      <tr><th>Jenis Kelamin</th><td id="jk">-</td></tr>
+      <tr><th>Alamat</th><td id="alamat">-</td></tr>
+      <tr><th>No HP</th><td id="hp">-</td></tr>
     </table>
-  </section>
+  </div>
 
-  <section id="grafik">
-    <h2>Grafik IPK / IPS</h2>
-    <canvas id="grafikNilai"></canvas>
-  </section>
+  <!-- Tagihan SPP -->
+  <h2>Tagihan SPP 1 Tahun</h2>
+  <table id="tabel-spp">
+    <thead>
+      <tr>
+        <th>Bulan</th>
+        <th>Jumlah</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-  <section id="cetak">
-    <button onclick="window.print()">Cetak Bukti Pembayaran</button>
-  </section>
+  <!-- Grafik -->
+  <h2>Grafik IPS / IPK</h2>
+  <canvas id="chart"></canvas>
+
+  <!-- Tombol Cetak -->
+  <button onclick="window.print()">🧾 Cetak Bukti Pembayaran</button>
 </main>
 
   </div>  <script src="script.js"></script></body>
