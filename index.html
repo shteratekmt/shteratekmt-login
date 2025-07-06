@@ -3,64 +3,17 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Siswa - SH TERATE KMT</title>
-  <link rel="icon" href="logo-shterate.png" type="image/png" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .login-box {
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 30px 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
-    .login-box img {
-      width: 90px;
-      margin-bottom: 15px;
-    }
-    .login-box h2 {
-      font-size: 22px;
-      margin-bottom: 20px;
-      color: #222;
-    }
-    .login-btn {
-      background-color: #009688;
-      color: #fff;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .login-btn:hover {
-      background-color: #00796b;
-    }
-    .footer {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #777;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Siswa - SH Terate KMT</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="login-box">
-    <img src="logo-shterate.png" alt="Logo SH Terate" />
-    <h2>Login Siswa</h2>
-    <button class="login-btn" onclick="login()">Login dengan Google</button>
-    <div class="footer">SH TERATE KMT • Pusat Madiun</div>
+  <div class="overlay">
+    <div class="login-card">
+      <img src="logo-shterate.png" alt="Logo SH Terate KMT" class="logo" />
+      <h2>Login Siswa</h2>
+      <button onclick="login()">Login dengan Google</button>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
