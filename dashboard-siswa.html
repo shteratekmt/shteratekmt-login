@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Siswa</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -18,57 +17,44 @@
       background: #fff;
       padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #004d40;
     }
     label {
-      font-weight: 600;
+      font-weight: bold;
     }
     input, select, textarea {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
       margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
     }
     button {
       padding: 12px;
-      background-color: #004d40;
+      width: 100%;
+      background: #004d40;
       color: white;
-      font-weight: bold;
       border: none;
       border-radius: 6px;
-      width: 100%;
-      cursor: pointer;
+    }
+    #fotoPreview {
+      max-width: 100px;
+      margin-bottom: 10px;
     }
     table {
       width: 100%;
+      margin-top: 20px;
       border-collapse: collapse;
-      margin-top: 30px;
     }
     th, td {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 8px;
     }
-    .status-belum { color: red; font-weight: bold; }
-    .status-lunas { color: green; font-weight: bold; }
-    #fotoPreview {
-      max-width: 100px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
+    .status-belum { color: red; }
+    .status-lunas { color: green; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Dashboard Siswa</h2>
-    <img id="fotoPreview" src="" alt="Foto Profil" style="display:none"/>
+    <img id="fotoPreview" style="display:none"/>
     <form id="biodataForm">
       <label>Nama Lengkap</label>
       <input type="text" name="nama" required />
@@ -90,7 +76,6 @@
       <input type="file" name="foto" accept="image/*" />
       <button type="submit">Simpan Biodata</button>
     </form>
-
     <table id="tagihanTable">
       <thead>
         <tr>
@@ -104,7 +89,6 @@
       <tbody></tbody>
     </table>
   </div>
-
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbzotDHjsclwfCNjCE2XEVcYZiJW_RpHrY1xWDdDzAUzjmLkNvKTEDVIMsuUtuYJaVRp/exec";
     const email = localStorage.getItem("email");
@@ -126,15 +110,16 @@
 
     document.getElementById("biodataForm").addEventListener("submit", e => {
       e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
+      const formData = new FormData(e.target);
       formData.append("email", email);
       formData.append("type", "updateBiodata");
-
-      fetch(scriptURL, { method: "POST", body: formData })
-        .then(res => res.text())
-        .then(msg => alert(msg))
-        .catch(() => alert("Gagal menyimpan biodata."));
+      fetch(scriptURL, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(alert)
+      .catch(() => alert("Gagal menyimpan biodata."));
     });
 
     fetch(`${scriptURL}?email=${encodeURIComponent(email)}&type=tagihan`)
@@ -148,7 +133,8 @@
             <td>${row.Jumlah}</td>
             <td class="${row.Status === 'Lunas' ? 'status-lunas' : 'status-belum'}">${row.Status}</td>
             <td>${row.Bukti ? `<a href="${row.Bukti}" target="_blank">Lihat</a>` : '-'}</td>
-            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>`;
+            <td>${row.Status !== 'Lunas' ? `<input type="file" onchange="uploadBukti(this, '${row.Bulan}')">` : '✔'}</td>
+          `;
           tbody.appendChild(tr);
         });
       });
@@ -160,14 +146,13 @@
       formData.append("bulan", bulan);
       formData.append("bukti", file);
       formData.append("type", "uploadBukti");
-
       fetch(scriptURL, {
         method: "POST",
         body: formData
       })
-        .then(res => res.text())
-        .then(alert)
-        .catch(() => alert("Gagal upload bukti pembayaran."));
+      .then(res => res.text())
+      .then(alert)
+      .catch(() => alert("Gagal upload bukti pembayaran."));
     }
   </script>
 </body>
