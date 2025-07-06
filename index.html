@@ -1,25 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login Siswa - SH TERATE KMT</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="container">
-    <div class="login-box">
-      <img src="https://i.imgur.com/FzqE5KS.png" alt="Logo SH Terate KMT" class="logo">
-      <h1>Login Siswa</h1>
-      <p>Silakan login menggunakan akun Google Anda untuk mengakses dashboard siswa.</p>
-      <button onclick="handleLogin()" class="btn-login">Login dengan Google</button>
+<body class="login-page">
+  <div class="login-box">
+    <div class="login-header">
+      <img src="logo-shterate.png" alt="Logo SH Terate" class="logo-left" />
+      <h2>LOGIN</h2>
     </div>
+    <p class="desc">Masuk dengan akun Google</p>
+    <button class="btn-login" onclick="handleLogin()">Login dengan Google</button>
   </div>
 
-  <script>
-    function handleLogin() {
-      window.location.href = "https://script.google.com/macros/s/AKfycbx9HCRtn5WhhWcb27ia-vSUSkB57iaJ6sEgwtc_t2-SmTr5Btz7ezk2kp7quBJY3Jf5/exec";
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
