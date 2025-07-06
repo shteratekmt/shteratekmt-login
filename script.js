@@ -1,76 +1,76 @@
-// Ganti URL berikut dengan URL Web App Google Apps Script kamu document.addEventListener("DOMContentLoaded", () => { const emailLogin = sessionStorage.getItem("email"); const scriptURL = "https://script.google.com/macros/s/AKfycbx9HCRtn5WhhWcb27ia-vSUSkB57iaJ6sEgwtc_t2-SmTr5Btz7ezk2kp7quBJY3Jf5/exec";
+// Ganti URL di bawah sesuai dengan Web App Google Apps Script kamu
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbx9HCRtn5WhhWcb27ia-vSUSkB57iaJ6sEgwtc_t2-SmTr5Btz7ezk2kp7quBJY3Jf5/exec";
 
-if (!emailLogin) { alert("Silakan login terlebih dahulu!"); window.location.href = "index.html"; return; }
+// Ambil email dari localStorage (sudah disimpan saat login)
+const email = localStorage.getItem("email");
 
-fetch(${scriptURL}?email=${emailLogin}) .then((res) => res.json()) .then((data) => { if (!data || !data.nama) { alert("Data siswa tidak ditemukan."); return; }
+// Kalau belum login, kembalikan ke index
+if (!email) {
+  window.location.href = "index.html";
+}
 
-// Isi Biodata
-  document.getElementById("nama").innerText = data.nama;
-  document.getElementById("nik").innerText = data.nik;
-  document.getElementById("email").innerText = data.email;
-  document.getElementById("tgl_lahir").innerText = data.tanggal_lahir;
-  document.getElementById("jk").innerText = data.jk;
-  document.getElementById("alamat").innerText = data.alamat;
-  document.getElementById("nohp").innerText = data.hp;
-  document.getElementById("foto").src = data.foto;
+fetch(`${SHEET_URL}?email=${email}`)
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+      const d = data.data;
 
-  // Tabel Tagihan SPP
-  const tbody = document.getElementById("tabel-spp");
-  tbody.innerHTML = "";
-  let totalBayar = 0;
-  let totalBelum = 0;
+      // Isi biodata siswa
+      document.getElementById("nama").textContent = d.Nama;
+      document.getElementById("nik").textContent = d.NIK;
+      document.getElementById("email").textContent = d.Email;
+      document.getElementById("ttl").textContent = d.TanggalLahir;
+      document.getElementById("jk").textContent = d.JenisKelamin;
+      document.getElementById("alamat").textContent = d.Alamat;
+      document.getElementById("hp").textContent = d.NoHP;
+      document.getElementById("foto").src = d.Foto;
 
-  data.spp.forEach((row) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.bulan}</td>
-      <td>Rp ${parseInt(row.jumlah).toLocaleString()}</td>
-      <td style="color: ${row.status.toLowerCase() === 'lunas' ? 'green' : 'red'}">${row.status}</td>
-    `;
-    tbody.appendChild(tr);
+      // Isi tabel SPP
+      const sppTable = document.querySelector("#tabel-spp tbody");
+      sppTable.innerHTML = "";
+      Object.keys(d).forEach(k => {
+        if (k.startsWith("SPP_") && d[k]) {
+          const bulan = k.replace("SPP_", "");
+          const status = d[k];
+          const row = `
+            <tr>
+              <td>${bulan}</td>
+              <td>Rp150.000</td>
+              <td><span style="color: ${status === 'Lunas' ? 'green' : 'red'}">${status}</span></td>
+            </tr>
+          `;
+          sppTable.innerHTML += row;
+        }
+      });
 
-    if (row.status.toLowerCase() === "lunas") totalBayar += parseInt(row.jumlah);
-    else totalBelum += parseInt(row.jumlah);
-  });
-
-  document.getElementById("sudahBayar").innerText = `Rp ${totalBayar.toLocaleString()}`;
-  document.getElementById("belumBayar").innerText = `Rp ${totalBelum.toLocaleString()}`;
-
-  // Grafik IPK / IPS
-  new Chart(document.getElementById("grafikNilai"), {
-    type: "line",
-    data: {
-      labels: data.nilai.map((n) => n.semester),
-      datasets: [
-        {
-          label: "IPK",
-          data: data.nilai.map((n) => parseFloat(n.ipk)),
-          borderColor: "teal",
-          backgroundColor: "rgba(0, 128, 128, 0.1)",
-          fill: true,
-          tension: 0.3,
+      // Grafik IPS/IPK
+      const ctx = document.getElementById("chart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Semester 1", "Semester 2", "Semester 3", "Semester 4"],
+          datasets: [{
+            label: "IPS / IPK",
+            data: [d.Sem1 || 0, d.Sem2 || 0, d.Sem3 || 0, d.Sem4 || 0],
+            backgroundColor: ["#00bcd4", "#2196f3", "#4caf50", "#ff9800"]
+          }]
         },
-      ],
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 4,
-        },
-      },
-    },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 4
+            }
+          }
+        }
+      });
+
+    } else {
+      alert("Data tidak ditemukan.");
+      window.location.href = "index.html";
+    }
+  })
+  .catch(err => {
+    console.error("Gagal mengambil data:", err);
+    alert("Terjadi kesalahan, coba lagi.");
   });
-})
-.catch((err) => {
-  console.error("Gagal ambil data:", err);
-  alert("Gagal mengambil data siswa.");
-});
-
-});
-
-function logout() { sessionStorage.clear(); window.location.href = "index.html"; }
-
-function cetak() { window.print(); }
-
