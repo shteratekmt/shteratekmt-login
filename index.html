@@ -1,19 +1,52 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login Siswa - SH TERATE KMT</title>
+  <meta charset="UTF-8">
+  <title>Login Siswa - SHT KMT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('bg-shteratekmt.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .login-container {
+      background: rgba(255, 255, 255, 0.9);
+      max-width: 350px;
+      margin: 80px auto;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .login-container img {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    .login-container h2 {
+      margin-bottom: 20px;
+    }
+    .login-btn {
+      background-color: teal;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .login-btn:hover {
+      background-color: #007070;
+    }
+  </style>
 </head>
-<body class="login-page">
-  <div class="login-box">
-    <div class="login-header">
-      <img src="logo-shterate.png" alt="Logo SH Terate" class="logo-left" />
-      <h2>LOGIN</h2>
-    </div>
-    <p class="desc">Masuk dengan akun Google</p>
-    <button class="btn-login" onclick="handleLogin()">Login dengan Google</button>
+<body>
+  <div class="login-container">
+    <img src="logo-shterate.png" alt="Logo SHT KMT">
+    <h2>Login Siswa</h2>
+    <button class="login-btn" onclick="login()">Login dengan Google</button>
   </div>
 
   <script src="script.js"></script>
