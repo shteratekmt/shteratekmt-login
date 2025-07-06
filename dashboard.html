@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Siswa - SH Terate KMT</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body class="dashboard-page">
+  <aside class="sidebar">
+    <h2>SH Terate KMT</h2>
+    <ul>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Biodata</a></li>
+      <li><a href="#">Tagihan SPP</a></li>
+      <li><a href="#">Riwayat</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </aside>
+
+  <main class="content">
+    <header>
+      <h2>Selamat Datang, <span id="nama">...</span></h2>
+    </header>
+
+    <section class="biodata-box">
+      <h3>Data Pribadi</h3>
+      <p><strong>NIK:</strong> <span id="nik">...</span></p>
+      <p><strong>Jenis Kelamin:</strong> <span id="jk">...</span></p>
+      <p><strong>Alamat:</strong> <span id="alamat">...</span></p>
+    </section>
+
+    <section class="spp-box">
+      <h3>Status Pembayaran SPP</h3>
+      <table>
+        <thead>
+          <tr><th>Bulan</th><th>Status</th></tr>
+        </thead>
+        <tbody id="tabel-spp">
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
