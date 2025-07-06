@@ -1,7 +1,5 @@
-
 function login() {
-  alert("Login Google akan dikaitkan ke spreadsheet...");
-  window.location.href = "dashboard.html";
+  window.location.href = "https://script.google.com/macros/s/AKfycbx9HCRtn5WhhWcb27ia-vSUSkB57iaJ6sEgwtc_t2-SmTr5Btz7ezk2kp7quBJY3Jf5/exec";
 }
 
 function logout() {
