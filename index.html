@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard SHT KMT</title>
+  <title>Dashboard Siswa - SHT KMT</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="app-container">
@@ -13,11 +13,12 @@
       <h2 class="brand">SHT KMT</h2>
       <ul class="nav">
         <li class="active">Dashboard</li>
-        <li>Profil</li>
         <li>Tagihan</li>
+        <li>Grafik</li>
         <li onclick="logout()">Logout</li>
       </ul>
     </aside>
+
     <main class="main-content">
       <header class="header">
         <h1>Dashboard Siswa</h1>
@@ -34,12 +35,12 @@
           <p id="belumBayar">Rp 0</p>
         </div>
         <div class="card blue action">
-          <button onclick="cetak()">🖨 Cetak Tagihan</button>
+          <button onclick="cetak()">🖨️ Cetak Tagihan</button>
         </div>
       </section>
 
       <section class="profile-section">
-        <h2>Detail Info Siswa</h2>
+        <h2>Info Siswa</h2>
         <div class="profile-info">
           <img id="foto" src="" alt="Foto Siswa" />
           <table>
@@ -54,16 +55,26 @@
       </section>
 
       <section class="table-section">
-        <h2>Daftar Tagihan SPP</h2>
-        <table class="tagihan-table">
+        <h2>Tagihan SPP</h2>
+        <table id="tabel-spp">
           <thead>
-            <tr><th>Bulan</th><th>Jumlah</th><th>Status</th></tr>
+            <tr>
+              <th>Bulan</th>
+              <th>Nominal</th>
+              <th>Status</th>
+            </tr>
           </thead>
-          <tbody id="dataTagihan"></tbody>
+          <tbody></tbody>
         </table>
+      </section>
+
+      <section class="chart-section">
+        <h2>Grafik IPS/IPK</h2>
+        <canvas id="grafik"></canvas>
       </section>
     </main>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
